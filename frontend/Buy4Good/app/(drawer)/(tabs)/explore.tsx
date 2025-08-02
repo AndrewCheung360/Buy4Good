@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -9,25 +9,25 @@ import {
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { mockCategories } from '@/data/mockData';
-import SearchDrawer from '@/components/SearchDrawer';
+import { DrawerActions } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 48) / 2; // 24px padding on each side, 24px gap between cards
+const cardWidth = (width - 60) / 2; // Account for padding (24*2) + gap (12)
 
 export default function ExploreScreen() {
-  const [searchDrawerVisible, setSearchDrawerVisible] = useState(false);
+  const navigation = useNavigation();
 
   const handleCategoryPress = (category: any) => {
     router.push({
-      pathname: '/merchants/[category]' as any,
+      pathname: '/(drawer)/merchants/[category]' as any,
       params: { category: category.id, title: category.displayName }
     });
   };
 
   const openSearchDrawer = () => {
-    setSearchDrawerVisible(true);
+    navigation.dispatch(DrawerActions.openDrawer());
   };
 
   return (
@@ -61,11 +61,6 @@ export default function ExploreScreen() {
           ))}
         </View>
       </ScrollView>
-
-      <SearchDrawer
-        visible={searchDrawerVisible}
-        onClose={() => setSearchDrawerVisible(false)}
-      />
     </SafeAreaView>
   );
 }
@@ -115,6 +110,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    paddingHorizontal: 0,
   },
   categoryCard: {
     width: cardWidth,

@@ -14,7 +14,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { mockMerchants } from '@/data/mockData';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 48) / 2;
+const cardWidth = (width - 60) / 2; // Account for padding (24*2) + gap (12)
 
 export default function CategoryMerchantsScreen() {
   const { category, title } = useLocalSearchParams<{ category: string; title: string }>();
@@ -23,7 +23,7 @@ export default function CategoryMerchantsScreen() {
 
   const handleMerchantPress = (merchant: any) => {
     router.push({
-      pathname: '/webview/[merchant]' as any,
+      pathname: '/(drawer)/webview/[merchant]' as any,
       params: { 
         merchant: merchant.id,
         url: merchant.url,
@@ -52,7 +52,7 @@ export default function CategoryMerchantsScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>{title}</Text>
         
-        <View style={styles.merchantsGrid}>
+                <View style={styles.merchantsGrid}>
           {merchants.map((merchant, index) => (
             <TouchableOpacity
               key={merchant.id}
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    paddingHorizontal: 0,
   },
   merchantCard: {
     width: cardWidth,
