@@ -28,6 +28,10 @@ export const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 export const APP_SCHEME = process.env.EXPO_PUBLIC_SCHEME;
 export const JWT_SECRET = process.env.JWT_SECRET!;
 
+// Plaid Constants
+export const PLAID_CLIENT_ID = process.env.EXPO_PUBLIC_PLAID_CLIENT_ID;
+export const PLAID_SECRET = process.env.EXPO_PUBLIC_PLAID_SECRET;
+
 // Cookie Settings
 export const COOKIE_OPTIONS = {
   httpOnly: true,
