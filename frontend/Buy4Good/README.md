@@ -1,50 +1,58 @@
-# Welcome to your Expo app 👋
+# Buy4Good Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is the React Native mobile application for Buy4Good, built with Expo.
 
-## Get started
+For complete project documentation, setup instructions, and API information, please see the [main project README](../../README.md).
+
+## Quick Start
 
 1. Install dependencies
-
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Configure environment variables
+   ```bash
+   # Create .env file with required API keys
+   cp .env.example .env
+   ```
 
+3. Start the development server
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## Project Structure
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+```
+app/
+├── (tabs)/                 # Tab navigation screens
+│   ├── dashboard.tsx       # Main dashboard
+│   ├── explore.tsx         # Merchant browsing
+│   ├── charities.tsx       # Charity selection
+│   └── settings.tsx        # User settings
+├── components/             # Reusable UI components
+├── webview/               # Merchant webview integration
+└── _layout.tsx            # Root layout and navigation
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+context/
+├── auth.tsx               # Authentication context
 
-## Get a fresh project
+data/
+├── mockData.ts            # Mock data for development
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+utils/
+├── plaid.ts               # Plaid integration utilities
+└── supabase.ts            # Supabase client configuration
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Key Features
 
-## Learn more
+- 🔐 Google OAuth authentication
+- 🏦 Plaid bank account integration
+- 🛒 Partner merchant shopping
+- 💝 Charity selection and donation tracking
+- 📊 Interactive donation analytics dashboard
+- 📱 Real-time activity feed
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+For detailed setup instructions, API documentation, and contribution guidelines, see the [main README](../../README.md).

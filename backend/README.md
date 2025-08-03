@@ -2,65 +2,65 @@
 
 A FastAPI-based backend server for handling donations, organization data, transaction simulation, and affiliate network webhooks through the Pledge.to API.
 
-## Features
+For complete project documentation, setup instructions, and frontend information, please see the [main project README](../README.md).
 
-- **Donations**: Create donations to nonprofit organizations (using sandbox for testing)
-- **Organizations**: Get organization details and browse available nonprofits
-- **Transaction Simulation**: Mock transaction processing for affiliate network testing
-- **Webhook Handling**: Process incoming webhooks from affiliate networks
-- **FastAPI Framework**: Automatic OpenAPI documentation and validation
-- **Modular Architecture**: Organized route modules for easy extension
-- **Error Handling**: Comprehensive error handling and logging
-- **Health Checks**: Multiple health check endpoints
-- **CORS Support**: Ready for frontend integration
+## Quick Start
+
+1. Create virtual environment
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+2. Install dependencies
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Configure environment variables
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys
+   ```
+
+4. Start the server
+   ```bash
+   python main.py
+   ```
+
+## API Documentation
+
+Once running, access the interactive API documentation:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
 
 ## Project Structure
 
 ```
-backend/
-├── main.py                    # FastAPI application entry point
-├── config.py                  # Configuration and settings
-├── models.py                  # Pydantic models for request/response
-├── requirements.txt           # Python dependencies
-├── .env                      # Environment variables
-├── .env.example              # Environment template  
-├── .gitignore                # Git ignore patterns
-├── start.sh                  # Startup script
-├── test_api.py               # Comprehensive API tests
-├── README.md                 # This file
-├── routes/                   # Route modules
-│   ├── __init__.py
-│   ├── donations.py          # Donation endpoints
-│   ├── organizations.py      # Organization endpoints
-│   ├── transactions.py       # Transaction simulation & webhooks
-│   └── health.py            # Health check endpoints
-└── services/                 # Service modules
-    ├── __init__.py
-    └── pledge_client.py      # Enhanced Pledge.to API client
+routes/
+├── donations.py           # Donation processing endpoints
+├── organizations.py       # Charity organization data
+├── transactions.py        # Transaction simulation & webhooks
+└── health.py             # Health monitoring
+
+services/
+└── pledge_client.py      # Pledge.to API integration
+
+models.py                 # Pydantic data models
+config.py                # Configuration settings
+main.py                  # FastAPI application
 ```
 
-## Setup
+## Key Features
 
-### 1. Create Virtual Environment
+- 💸 Sandbox donation processing via Pledge.to
+- 🏢 Nonprofit organization data management
+- 🔄 Transaction simulation for testing
+- 🪝 Webhook handling for affiliate networks
+- 📚 Automatic API documentation
+- 🏥 Comprehensive health monitoring
 
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 2. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Environment Configuration
-
-Copy the example environment file and configure your settings:
-
-```bash
-cp .env.example .env
+For detailed setup instructions, frontend integration, and contribution guidelines, see the [main README](../README.md).
 ```
 
 Edit `.env` and set your configuration:
