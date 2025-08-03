@@ -1,20 +1,20 @@
-import React, { useState, useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Dimensions,
-  TextInput,
-} from 'react-native';
-import { Image } from 'expo-image';
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import AppHeader from '@/app/components/AppHeader';
 import { mockCategories, mockMerchants } from '@/data/mockData';
 import { Merchant } from '@/types';
-import AppHeader from '@/components/AppHeader';
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { router } from 'expo-router';
+import React, { useMemo, useState } from 'react';
+import {
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 60) / 2; // Account for padding (24*2) + gap (12)
@@ -47,21 +47,21 @@ export default function ShopScreen() {
   // Filter merchants based on selected categories and search query
   const filteredMerchants = useMemo(() => {
     let filtered = allMerchants;
-    
+
     // Filter by categories
     if (!selectedCategories.includes('all')) {
-      filtered = filtered.filter(merchant => 
+      filtered = filtered.filter(merchant =>
         selectedCategories.includes(merchant.category)
       );
     }
-    
+
     // Filter by search query
     if (searchQuery.trim() !== '') {
       filtered = filtered.filter(merchant =>
         merchant.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
+
     // Sort merchants
     switch (sortBy) {
       case 'alphabetical':
@@ -91,14 +91,14 @@ export default function ShopScreen() {
         });
         break;
     }
-    
+
     return filtered;
   }, [allMerchants, selectedCategories, searchQuery, sortBy, sortOrder]);
 
   const handleMerchantPress = (merchant: Merchant) => {
     router.navigate({
       pathname: '/webview/[merchant]' as any,
-      params: { 
+      params: {
         merchant: merchant.id,
         url: merchant.url,
         name: merchant.name
@@ -149,14 +149,14 @@ export default function ShopScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader 
+      <AppHeader
         onProfilePress={handleProfilePress}
         onNotificationPress={handleNotificationPress}
       />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Shop</Text>
-        
+
         {/* Search Input - Full Width */}
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="#8E8E93" style={styles.searchIcon} />
@@ -168,10 +168,10 @@ export default function ShopScreen() {
             placeholderTextColor="#8E8E93"
           />
         </View>
-        
+
         {/* Category Filter Chips */}
-        <ScrollView 
-          horizontal 
+        <ScrollView
+          horizontal
           style={styles.categoryFilters}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoryFiltersContent}
@@ -193,7 +193,7 @@ export default function ShopScreen() {
               All
             </Text>
           </TouchableOpacity>
-          
+
           {mockCategories.map((category) => (
             <TouchableOpacity
               key={category.id}
@@ -218,7 +218,7 @@ export default function ShopScreen() {
 
         {/* Sorting/Alphabetical indicator */}
         <View style={styles.sortingContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.sortingButton}
             onPress={() => handleSortChange(sortBy)}
           >
@@ -255,7 +255,7 @@ export default function ShopScreen() {
             ))}
           </View>
         )}
-        
+
         {/* Merchants Grid */}
         <View style={styles.merchantsGrid}>
           {filteredMerchants.map((merchant, index) => (

@@ -1,6 +1,6 @@
+import AppHeader from '@/app/components/AppHeader';
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import AppHeader from '@/components/AppHeader';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 export default function DashboardScreen() {
   const handleProfilePress = () => {
@@ -15,7 +15,7 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader 
+      <AppHeader
         onProfilePress={handleProfilePress}
         onNotificationPress={handleNotificationPress}
       />
