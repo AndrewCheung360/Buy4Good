@@ -38,7 +38,7 @@ export default function SearchDrawerContent(props: any) {
 
   const handleMerchantPress = (merchant: any) => {
     router.replace({
-      pathname: '/(drawer)/webview/[merchant]' as any,
+      pathname: '/webview/[merchant]' as any,
       params: { 
         merchant: merchant.id,
         url: merchant.url,
