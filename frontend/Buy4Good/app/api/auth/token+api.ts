@@ -1,3 +1,4 @@
+export const runtime = "node";
 import {
   COOKIE_MAX_AGE,
   COOKIE_NAME,
@@ -65,14 +66,13 @@ export async function POST(request: Request) {
       success: true,
       issuedAt: issuedAt,
       expiresAt: issuedAt + COOKIE_MAX_AGE,
+      idToken: data.id_token, // Include the Google ID token
     });
 
     response.headers.set(
       "Set-Cookie",
-      `${COOKIE_NAME}=${accessToken}; Max-Age=${COOKIE_OPTIONS.maxAge}; Path=${
-        COOKIE_OPTIONS.path
-      }; ${COOKIE_OPTIONS.httpOnly ? "HttpOnly;" : ""}; ${
-        COOKIE_OPTIONS.secure ? "Secure;" : ""
+      `${COOKIE_NAME}=${accessToken}; Max-Age=${COOKIE_OPTIONS.maxAge}; Path=${COOKIE_OPTIONS.path
+      }; ${COOKIE_OPTIONS.httpOnly ? "HttpOnly;" : ""}; ${COOKIE_OPTIONS.secure ? "Secure;" : ""
       } SameSite=${COOKIE_OPTIONS.sameSite}`
     );
 
@@ -81,5 +81,6 @@ export async function POST(request: Request) {
 
   return Response.json({
     accessToken,
+    idToken: data.id_token, // Include the Google ID token for native
   });
 }

@@ -48,7 +48,7 @@ export default function MerchantWebViewScreen() {
       [
         {
           text: 'View Dashboard',
-          onPress: () => router.push('/(drawer)/(tabs)/dashboard' as any)
+          onPress: () => router.push('/(tabs)/dashboard' as any)
         },
         {
           text: 'Continue Shopping',
@@ -60,7 +60,7 @@ export default function MerchantWebViewScreen() {
 
   const goBack = () => {
     // router.back();
-    router.replace('/(drawer)/(tabs)/explore' as any);
+    router.replace('/(tabs)/explore' as any);
   };
 
   return (

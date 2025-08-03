@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useAuth } from "@/context/auth";
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "./components/LoginForm";
 import { Redirect } from "expo-router";
 import React from "react";
 
@@ -20,7 +20,7 @@ export default function Index() {
   }
 
   // Redirect to tabs if user is authenticated
-  return <Redirect href={"/(drawer)/(tabs)/dashboard" as any} />;
+  return <Redirect href={"/(tabs)/dashboard" as any} />;
 }
 
 const styles = StyleSheet.create({

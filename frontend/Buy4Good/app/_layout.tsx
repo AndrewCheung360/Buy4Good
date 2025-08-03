@@ -28,7 +28,16 @@ export default function RootLayout() {
     <AuthProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="(drawer)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen 
+          name="webview" 
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+            gestureEnabled: true,
+            gestureDirection: 'vertical',
+          }}
+        />
       </Stack>
       <StatusBar style="auto" />
     </AuthProvider>

@@ -11,6 +11,8 @@ import { BASE_URL, TOKEN_KEY_NAME } from "@/constants";
 import { Platform } from "react-native";
 import * as jose from "jose";
 import { tokenCache } from "@/utils/cache";
+import { supabase } from "@/utils/supabase";
+import { Session, User } from "@supabase/supabase-js";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -35,6 +37,8 @@ const AuthContext = React.createContext({
     Promise.resolve(new Response()),
   isLoading: false,
   error: null as AuthError | null,
+  supabaseUser: null as User | null,
+  supabaseSession: null as Session | null,
 });
 
 const config: AuthRequestConfig = {
@@ -53,12 +57,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<AuthError | null>(null);
   const [accessToken, setAccessToken] = React.useState<string | null>(null);
+  const [supabaseUser, setSupabaseUser] = React.useState<User | null>(null);
+  const [supabaseSession, setSupabaseSession] = React.useState<Session | null>(null);
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
   const isWeb = Platform.OS === "web";
 
+  // Function to sign in to Supabase with ID token
+  const signInToSupabase = async (idToken: string) => {
+    try {
+      console.log('Signing in to Supabase with Google ID token');
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: idToken,
+      });
+
+      if (error) {
+        console.error('Supabase sign in error:', error);
+        return;
+      }
+
+      console.log('Successfully signed in to Supabase:', data);
+    } catch (error) {
+      console.error('Error signing in to Supabase:', error);
+    }
+  };
+
+  // Listen to Supabase auth changes
   React.useEffect(() => {
-    handleResponse();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Supabase auth event:', event);
+        setSupabaseSession(session);
+        setSupabaseUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  React.useEffect(() => {
+    if (response) {
+      handleResponse();
+    }
   }, [response]);
 
   React.useEffect(() => {
@@ -133,6 +174,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const userData = await tokenResponse.json();
 
         if (userData.success) {
+          // Sign in to Supabase with ID token from backend
+          if (userData.idToken) {
+            await signInToSupabase(userData.idToken);
+          }
+
           const sessionResponse = await fetch(`${BASE_URL}/api/auth/session`, {
             method: "GET",
             credentials: "include",
@@ -146,12 +192,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else {
         const token = await tokenResponse.json();
         const accessToken = token.accessToken;
+        const idToken = token.idToken; // Get ID token from backend
 
         if (!accessToken) {
           console.error("No access token received.");
           return;
         }
         setAccessToken(accessToken);
+
+        // Sign in to Supabase with ID token from backend
+        if (idToken) {
+          await signInToSupabase(idToken);
+        }
 
         tokenCache?.saveToken(TOKEN_KEY_NAME, accessToken);
 
@@ -204,9 +256,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await tokenCache?.deleteToken("refreshToken");
     }
 
+    // Sign out from Supabase
+    try {
+      await supabase.auth.signOut();
+      console.log("Signed out from Supabase");
+    } catch (error) {
+      console.error("Error signing out from Supabase:", error);
+    }
+
     // Clear state
     setUser(null);
     setAccessToken("");
+    setSupabaseUser(null);
+    setSupabaseSession(null);
   };
   const fetchWithAuth = async (url: string, options: RequestInit) => {
     if (isWeb) {
@@ -237,6 +299,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         fetchWithAuth,
         isLoading,
         error,
+        supabaseUser,
+        supabaseSession,
       }}
     >
       {children}
