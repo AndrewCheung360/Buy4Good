@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, Platform } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList } from 'react-native';
 import {
   EXPO_PUBLIC_PLEDGE_API_TOKEN
 } from "@/constants";
 import OrganizationCard from '@/components/OrganizationCard';
+import AppHeader from '@/components/AppHeader';
 
 // Import the Organization type if it's exported from OrganizationCard or define it here
 import type { Organization } from '@/components/OrganizationCard';
@@ -56,8 +57,22 @@ export default function CharityScreen() {
 
     fetchFundraisers();
   }, []);
+  const handleProfilePress = () => {
+    // Handle profile press - could navigate to profile screen
+    console.log('Profile pressed from Charities');
+  };
+
+  const handleNotificationPress = () => {
+    // Handle notification press - could navigate to notifications screen
+    console.log('Notifications pressed from Charities');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <AppHeader 
+        onProfilePress={handleProfilePress}
+        onNotificationPress={handleNotificationPress}
+      />
       <View style={styles.content}>
         <Text style={styles.title}>Charity Library</Text>
         {loading && <ActivityIndicator size="large" color="#1a1a1a" />}

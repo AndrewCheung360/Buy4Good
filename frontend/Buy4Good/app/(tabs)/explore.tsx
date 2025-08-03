@@ -14,13 +14,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { mockCategories, mockMerchants } from '@/data/mockData';
 import { Merchant } from '@/types';
-import { useAuth } from '@/context/auth';
+import AppHeader from '@/components/AppHeader';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 60) / 2; // Account for padding (24*2) + gap (12)
 
 export default function ShopScreen() {
-  const { user } = useAuth();
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['all']);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('alphabetical');
@@ -138,30 +137,22 @@ export default function ShopScreen() {
     return sortOrder === 'asc' ? 'arrow-up' : 'arrow-down';
   };
 
+  const handleProfilePress = () => {
+    // Handle profile press - could navigate to profile screen
+    console.log('Profile pressed');
+  };
+
+  const handleNotificationPress = () => {
+    // Handle notification press - could navigate to notifications screen
+    console.log('Notifications pressed');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.profileButton}>
-          {user?.picture ? (
-            <Image
-              source={{ uri: user.picture }}
-              style={styles.profileImage}
-              contentFit="cover"
-            />
-          ) : (
-            <Ionicons name="person-circle-outline" size={32} color="#474747" />
-          )}
-        </TouchableOpacity>
-        
-        <View style={styles.logoContainer}>
-          <Text style={styles.logo}>BUY4</Text>
-          <Text style={styles.logo}>GOOD</Text>
-        </View>
-        
-        <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={24} color="#474747" />
-        </TouchableOpacity>
-      </View>
+      <AppHeader 
+        onProfilePress={handleProfilePress}
+        onNotificationPress={handleNotificationPress}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Shop</Text>
@@ -297,41 +288,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 20,
-  },
-  profileButton: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileImage: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-  },
-  logoContainer: {
-    alignItems: 'center',
-  },
-  logo: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#1A3B48',
-    letterSpacing: 1,
-    lineHeight: 18,
-  },
-  notificationButton: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -470,6 +426,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
   },
   merchantLogo: {
     width: 80,
