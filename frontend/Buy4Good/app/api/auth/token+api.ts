@@ -66,6 +66,7 @@ export async function POST(request: Request) {
       success: true,
       issuedAt: issuedAt,
       expiresAt: issuedAt + COOKIE_MAX_AGE,
+      idToken: data.id_token, // Include the Google ID token
     });
 
     response.headers.set(
@@ -80,5 +81,6 @@ export async function POST(request: Request) {
 
   return Response.json({
     accessToken,
+    idToken: data.id_token, // Include the Google ID token for native
   });
 }
