@@ -20,7 +20,7 @@ export default function Index() {
   }
 
   // Redirect to tabs if user is authenticated
-  return <Redirect href="/(tabs)/dashboard" />;
+  return <Redirect href={"/(drawer)/(tabs)/dashboard" as any} />;
 }
 
 const styles = StyleSheet.create({
