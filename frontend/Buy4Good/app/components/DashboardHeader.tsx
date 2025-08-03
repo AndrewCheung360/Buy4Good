@@ -21,7 +21,7 @@ export default function DashboardHeader() {
       <GridPattern />
       <View style={styles.donationSection}>
         <Text style={styles.donationLabel}>You've donated</Text>
-        <Text style={styles.donationAmount}>$0.00</Text>
+        <Text style={styles.donationAmount}>$247.50</Text>
 
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.shopButton} onPress={handleShopPress}>

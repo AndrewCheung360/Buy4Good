@@ -1,38 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-type ActivityItem = {
-  id: string;
-  organization: string;
-  activity: string;
-  amount: string;
-  icon: string;
-};
-
-const mockActivities: ActivityItem[] = [
-  {
-    id: "1",
-    organization: "SDCCU School Supply Donation Center",
-    activity: "SDCCU Stuff the Bus",
-    amount: "$12.50",
-    icon: "🎒",
-  },
-  {
-    id: "2",
-    organization: "SDCCU School Supply Donation Center",
-    activity: "SDCCU Stuff the Bus",
-    amount: "$12.50",
-    icon: "🎒",
-  },
-  {
-    id: "3",
-    organization: "SDCCU School Supply Donation Center",
-    activity: "SDCCU Stuff the Bus",
-    amount: "$12.50",
-    icon: "🎒",
-  },
-];
+import { mockRecentActivities, ActivityItem } from "@/data/mockData";
 
 export default function RecentActivity() {
   return (
@@ -44,7 +13,7 @@ export default function RecentActivity() {
         </TouchableOpacity>
       </View>
 
-      {mockActivities.map((activity) => (
+      {mockRecentActivities.map((activity) => (
         <View key={activity.id} style={styles.activityCard}>
           <View style={styles.activityIcon}>
             <Text style={styles.iconText}>{activity.icon}</Text>

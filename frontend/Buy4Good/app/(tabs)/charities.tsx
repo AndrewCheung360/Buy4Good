@@ -14,8 +14,8 @@ import OrganizationCard from "../components/OrganizationCard";
 const API_BASE = "https://api.pledge.to/v1";
 
 // Import the Organization type if it's exported from OrganizationCard or define it here
-import type { Organization } from '@/app/components/OrganizationCard';
-import { supabase } from '@/utils/supabase';
+import type { Organization } from "@/app/components/OrganizationCard";
+import { supabase } from "@/utils/supabase";
 import { User } from "@supabase/supabase-js";
 
 export default function CharityScreen() {
@@ -38,13 +38,13 @@ export default function CharityScreen() {
 
     try {
       const { data, error } = await supabase
-        .from('user_charity_preferences')
-        .select('charity_id')
-        .eq('user_id', userId)
-        .in('charity_id', charityIds);
+        .from("user_charity_preferences")
+        .select("charity_id")
+        .eq("user_id", userId)
+        .in("charity_id", charityIds);
 
       if (error) {
-        console.error('Failed to fetch preferences:', error.message);
+        console.error("Failed to fetch preferences:", error.message);
         setPreferences({});
       } else {
         const prefsMap: Record<string, boolean> = {};
@@ -54,11 +54,10 @@ export default function CharityScreen() {
         setPreferences(prefsMap);
       }
     } catch (err) {
-      console.error('Error fetching preferences:', err);
+      console.error("Error fetching preferences:", err);
       setPreferences({});
     }
   };
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -68,7 +67,7 @@ export default function CharityScreen() {
       } = await supabase.auth.getUser();
 
       if (error) {
-        console.error('Failed to fetch user:', error.message);
+        console.error("Failed to fetch user:", error.message);
       } else {
         setUser(user);
       }
@@ -139,12 +138,14 @@ export default function CharityScreen() {
 
   useEffect(() => {
     if (user && orgs.length > 0) {
-      fetchPreferences(user.id, orgs.map(o => o.id));
+      fetchPreferences(
+        user.id,
+        orgs.map((o) => o.id)
+      );
     } else {
       setPreferences({});
     }
   }, [user, orgs]);
-
 
   const toggleCause = (causeId: number) => {
     if (selectedCauses.includes(causeId)) {
@@ -162,41 +163,41 @@ export default function CharityScreen() {
     if (liked) {
       // Remove preference
       const { error } = await supabase
-        .from('user_charity_preferences')
+        .from("user_charity_preferences")
         .delete()
-        .eq('user_id', user.id)
-        .eq('charity_id', charityId);
+        .eq("user_id", user.id)
+        .eq("charity_id", charityId);
 
       if (error) {
-        console.error('Failed to remove preference:', error.message);
+        console.error("Failed to remove preference:", error.message);
         return;
       }
     } else {
       // Add preference
       const { error } = await supabase
-        .from('user_charity_preferences')
-        .insert([{ user_id: user.id, charity_id: charityId, allocation_percentage: 0 }]);
+        .from("user_charity_preferences")
+        .insert([
+          { user_id: user.id, charity_id: charityId, allocation_percentage: 0 },
+        ]);
 
       if (error) {
-        console.error('Failed to add preference:', error.message);
+        console.error("Failed to add preference:", error.message);
         return;
       }
     }
 
     // Update local state
-    setPreferences(prev => ({
+    setPreferences((prev) => ({
       ...prev,
       [charityId]: !liked,
     }));
   };
-
 
   const clearFilters = () => setSelectedCauses([]);
 
   return (
     <SafeAreaView className="flex-1 bg-white p-1">
       <View style={{ paddingTop: 70 }}>
-        {" "}
         <Text className="text-3xl font-bold text-[#1a1a1a] px-6">
           Charities
         </Text>
@@ -217,22 +218,24 @@ export default function CharityScreen() {
             <Text className="text-gray-900 font-medium">All</Text>
           </TouchableOpacity>
 
-        {causes.map(cause => {
-          const isSelected = selectedCauses.includes(cause.id);
-          return (
-            <TouchableOpacity
-              key={cause.id}
-              className={`rounded-lg mx-2 h-10 px-4 justify-center items-center ${isSelected ? 'bg-gray-200' : 'bg-white border border-gray-300'}`}
-              onPress={() => toggleCause(cause.id)}
-            >
-              <Text className='text-gray-900 font-medium'>
-                {cause.name.trim()}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-
+          {causes.map((cause) => {
+            const isSelected = selectedCauses.includes(cause.id);
+            return (
+              <TouchableOpacity
+                key={cause.id}
+                className={`rounded-lg mx-2 h-10 px-4 justify-center items-center ${
+                  isSelected ? "bg-gray-200" : "bg-white border border-gray-300"
+                }`}
+                onPress={() => toggleCause(cause.id)}
+              >
+                <Text className="text-gray-900 font-medium">
+                  {cause.name.trim()}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
 
       {loading && (
         <View className="flex-1 justify-center items-center mt-10">
@@ -240,14 +243,12 @@ export default function CharityScreen() {
         </View>
       )}
 
-      {error && (
-        <Text className="text-red-600 text-center mt-4">{error}</Text>
-      )}
+      {error && <Text className="text-red-600 text-center mt-4">{error}</Text>}
 
       {!loading && !error && (
         <FlatList
           data={orgs}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           numColumns={2}
           renderItem={({ item }) => (
             <OrganizationCard
@@ -257,10 +258,9 @@ export default function CharityScreen() {
               onTogglePreference={() => togglePreference(item.id)}
             />
           )}
-          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
           contentContainerStyle={{ paddingBottom: 16, paddingHorizontal: 8 }}
         />
-
       )}
     </SafeAreaView>
   );

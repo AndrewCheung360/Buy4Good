@@ -5,17 +5,17 @@ export default function SummaryStats() {
   return (
     <View style={styles.container}>
       <View style={styles.statCard}>
-        <Text style={styles.statNumber}>0</Text>
+        <Text style={styles.statNumber}>8</Text>
         <Text style={styles.statLabel}>Causes Supported</Text>
       </View>
 
       <View style={styles.statCard}>
-        <Text style={styles.statNumber}>0</Text>
+        <Text style={styles.statNumber}>23</Text>
         <Text style={styles.statLabel}>Times Donated</Text>
       </View>
 
       <View style={styles.statCard}>
-        <Text style={styles.statNumber}>0</Text>
+        <Text style={styles.statNumber}>156</Text>
         <Text style={styles.statLabel}>Total Purchases</Text>
       </View>
     </View>
