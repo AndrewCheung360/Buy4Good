@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-native-pie-chart": "^4.0.1",
+    "react-native-svg": "^15.12.1"
+  }
+}

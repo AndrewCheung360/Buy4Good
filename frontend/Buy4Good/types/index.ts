@@ -1,45 +1,44 @@
-// Type definitions for Buy4Good app
+export type User = {
+  $id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  charities: string[];
+  totalDonationAmount: number;
+};
 
-export interface Category {
+export type BankAccount = {
+  id: string;
+  userId: string;
+  bankName: string;
+  accountNumberHash: string;
+  accountTye: string;
+  isActive: boolean;
+};
+
+export type Transaction = {
+  id: string;
+  userId: string;
+  accountId: string;
+  originalAmount: number;
+  donationAmount: number;
+  merchantName: string;
+  status: string;
+};
+
+export type Category = {
   id: string;
   name: string;
-  icon: string;
   displayName: string;
-}
+  icon: string;
+};
 
-export interface Merchant {
+export type Merchant = {
   id: string;
   name: string;
   logo: string;
   cashbackRate: number;
   category: string;
   url: string;
-  description?: string;
-}
-
-export interface Charity {
-  id: string;
-  name: string;
   description: string;
-  logo: string;
-  category: string;
-  pledgeId?: string;
-}
-
-export interface UserActivity {
-  id: string;
-  type: 'purchase' | 'donation' | 'cashback';
-  merchant?: string;
-  charity?: string;
-  amount: number;
-  date: string;
-  status: 'completed' | 'pending';
-}
-
-export interface UserStats {
-  totalDonations: number;
-  totalCashback: number;
-  totalPurchases: number;
-  activeCharity?: Charity;
-  splitPercentage: number;
-}
+};
