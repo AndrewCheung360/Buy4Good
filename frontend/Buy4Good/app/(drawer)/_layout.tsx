@@ -10,11 +10,17 @@ export default function DrawerLayout() {
         screenOptions={{
           headerShown: false,
           drawerPosition: 'right',
-          drawerType: 'slide',
+          drawerType: 'front',
           swipeEnabled: true,
+          drawerStyle: {
+            backgroundColor: 'transparent',
+            width: '80%',
+          },
+          overlayColor: 'rgba(0,0,0,0.3)',
         }}
       >
         <Drawer.Screen name="(tabs)" options={{ title: 'Main' }} />
+        <Drawer.Screen name="merchants" options={{ title: 'Merchants' }} />
         <Drawer.Screen name="webview" options={{ title: 'WebView' }} />
       </Drawer>
     </GestureHandlerRootView>

@@ -14,7 +14,7 @@ export default function LoginForm() {
                 </View>
                 
                 <Text style={styles.subtitle}>
-                    Shop, earn cashback, and support the causes you care about
+                    Shop and support the causes you care about
                 </Text>
                 
                 {/* Sign In Button */}
@@ -48,20 +48,20 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 40,
-        fontWeight: 'bold',
-        color: '#1a1a1a',
-        letterSpacing: 2,
+        fontWeight: '800',
+        color: '#1A3B48',
+        letterSpacing: 1,
     },
     subtitle: {
         fontSize: 16,
-        color: '#666666',
+        color: '#353535',
         textAlign: 'center',
         marginBottom: 60,
         lineHeight: 24,
         paddingHorizontal: 20,
     },
     signInButton: {
-        backgroundColor: '#000000',
+        backgroundColor: '#1A3B48',
         borderRadius: 12,
         paddingVertical: 16,
         paddingHorizontal: 32,

@@ -37,7 +37,7 @@ export default function SearchDrawerContent(props: any) {
   };
 
   const handleMerchantPress = (merchant: any) => {
-    router.push({
+    router.replace({
       pathname: '/(drawer)/webview/[merchant]' as any,
       params: { 
         merchant: merchant.id,
@@ -122,6 +122,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 50,
+    borderBottomLeftRadius: 50,
   },
   scrollContent: {
     flexGrow: 1,

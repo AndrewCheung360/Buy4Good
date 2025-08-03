@@ -20,7 +20,7 @@ export default function ExploreScreen() {
   const navigation = useNavigation();
 
   const handleCategoryPress = (category: any) => {
-    router.push({
+    router.replace({
       pathname: '/(drawer)/merchants/[category]' as any,
       params: { category: category.id, title: category.displayName }
     });
@@ -38,7 +38,7 @@ export default function ExploreScreen() {
           <Text style={styles.logo}>GOOD</Text>
         </View>
         <TouchableOpacity style={styles.searchButton} onPress={openSearchDrawer}>
-          <Ionicons name="search" size={24} color="#666" />
+          <Ionicons name="search" size={18} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
@@ -82,17 +82,17 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   logo: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#1A3B48',
     letterSpacing: 1,
-    lineHeight: 24,
+    lineHeight: 18,
   },
   searchButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: '#F5F5F7',
+    width: 34,
+    height: 34,
+    borderRadius: 5,
+    backgroundColor: '#1A3B4833',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -101,10 +101,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 32,
+    fontSize: 26,
+    fontWeight: '600',
+    color: '#353535',
+    marginBottom: 26,
   },
   categoriesGrid: {
     flexDirection: 'row',
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   categoryCard: {
     width: cardWidth,
-    height: 120,
+    height: cardWidth,
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     borderWidth: 1,

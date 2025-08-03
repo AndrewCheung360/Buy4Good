@@ -59,7 +59,8 @@ export default function MerchantWebViewScreen() {
   };
 
   const goBack = () => {
-    router.back();
+    // router.back();
+    router.replace('/(drawer)/(tabs)/explore' as any);
   };
 
   return (
@@ -67,17 +68,17 @@ export default function MerchantWebViewScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={goBack}>
-          <Ionicons name="chevron-back" size={24} color="#666" />
+          <Ionicons name="close" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         
         <Text style={styles.merchantName} numberOfLines={1}>{name}</Text>
         
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.actionButton} onPress={simulatePurchase}>
-            <Ionicons name="bag-outline" size={20} color="#007AFF" />
+            <Ionicons name="bag-outline" size={20} color="#1A3B48" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <Ionicons name="share-outline" size={20} color="#666" />
+            <Ionicons name="share-outline" size={20} color="#1A3B48" />
           </TouchableOpacity>
         </View>
       </View>
@@ -143,16 +144,16 @@ export default function MerchantWebViewScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1A3B48',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1A3B48',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E7',
+    borderBottomColor: '#1A3B48',
   },
   backButton: {
     marginRight: 12,
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     fontWeight: '600',
-    color: '#1a1a1a',
+    color: '#FFFFFF',
   },
   headerActions: {
     flexDirection: 'row',
@@ -171,7 +172,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F5F5F7',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
