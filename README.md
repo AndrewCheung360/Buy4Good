@@ -11,8 +11,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/andrewcheung/Buy4Good">
-    <img src="frontend/Buy4Good/assets/images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/AndrewCheung360/Buy4Good/">
+    <img width="468" height="304" alt="image" src="https://github.com/user-attachments/assets/7a6dd86b-5b0f-4b95-8bb4-013ab8b943db" />
+
   </a>
 
 <h3 align="center">Buy4Good</h3>
@@ -20,14 +21,14 @@
   <p align="center">
     A mobile app that turns everyday purchases into charitable donations through affiliate partnerships
     <br />
-    <a href="https://github.com/andrewcheung/Buy4Good"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/AndrewCheung360/Buy4Good"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/andrewcheung/Buy4Good">View Demo</a>
+    <a href="https://github.com/AndrewCheung360/Buy4Good">View Demo</a>
     ·
-    <a href="https://github.com/andrewcheung/Buy4Good/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/AndrewCheung360/Buy4Good/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/andrewcheung/Buy4Good/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/AndrewCheung360/Buy4Good/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -63,7 +64,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Buy4Good Screen Shot][product-screenshot]](https://github.com/andrewcheung/Buy4Good)
+<img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/c53461f9-439c-4481-bfd6-66231a7ecfa0" />
+
 
 Buy4Good is a comprehensive mobile application that seamlessly integrates charitable giving into everyday shopping. Users can connect their bank accounts, shop at partner merchants, and automatically donate a percentage of their purchases to their chosen charities. The app features real-time transaction tracking, donation analytics, and a curated selection of verified nonprofit organizations.
 
@@ -147,7 +149,7 @@ This project consists of two main components: a React Native mobile app (fronten
 
 #### 1. Clone the Repository
 ```sh
-git clone https://github.com/andrewcheung/Buy4Good.git
+git clone https://github.com/AndrewCheung360/Buy4Good.git
 cd Buy4Good
 ```
 
@@ -316,7 +318,7 @@ The backend provides comprehensive API documentation through FastAPI's automatic
   - [ ] API for third-party integrations
   - [ ] White-label solutions
 
-See the [open issues](https://github.com/andrewcheung/Buy4Good/issues) for a full list of proposed features and known issues.
+See the [open issues](https://github.com/AndrewCheung360/Buy4Good/issues) for a full list of proposed features and known issues.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -347,8 +349,8 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/andrewcheung/Buy4Good/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=andrewcheung/Buy4Good" alt="contrib.rocks image" />
+<a href="https://github.com/AndrewCheung360/Buy4Good/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=AndrewCheung360/Buy4Good" alt="contrib.rocks image" />
 </a>
 
 <!-- LICENSE -->
@@ -359,11 +361,22 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
-## Contact
+## Team
 
-Andrew Cheung - [@andrewcheung](https://linkedin.com/in/andrewcheung) - andrew@example.com
+### Developers
 
-Project Link: [https://github.com/andrewcheung/Buy4Good](https://github.com/andrewcheung/Buy4Good)
+[Andrew Cheung](https://www.linkedin.com/in/andrewcheung360/) - andrewcheung360@gmail.com
+
+[Jason Mun](https://www.linkedin.com/in/jason-mun-25181b1b9/) - jason.mun484@gmail.com
+
+[Dora Weng](https://www.linkedin.com/in/chuyinweng/) - cyweng03@gmail.com 
+
+### Designers
+
+[Vicky Wang](https://www.linkedin.com/in/vickywang214/) - vw92@cornell.edu
+
+[Joanna Chen](https://www.linkedin.com/in/joannachen1014/) - jc2887@cornell.edu
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -380,16 +393,16 @@ Project Link: [https://github.com/andrewcheung/Buy4Good](https://github.com/andr
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/andrewcheung/Buy4Good.svg?style=for-the-badge
-[contributors-url]: https://github.com/andrewcheung/Buy4Good/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/andrewcheung/Buy4Good.svg?style=for-the-badge
-[forks-url]: https://github.com/andrewcheung/Buy4Good/network/members
-[stars-shield]: https://img.shields.io/github/stars/andrewcheung/Buy4Good.svg?style=for-the-badge
-[stars-url]: https://github.com/andrewcheung/Buy4Good/stargazers
-[issues-shield]: https://img.shields.io/github/issues/andrewcheung/Buy4Good.svg?style=for-the-badge
-[issues-url]: https://github.com/andrewcheung/Buy4Good/issues
-[license-shield]: https://img.shields.io/github/license/andrewcheung/Buy4Good.svg?style=for-the-badge
-[license-url]: https://github.com/andrewcheung/Buy4Good/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/AndrewCheung360/Buy4Good.svg?style=for-the-badge
+[contributors-url]: https://github.com/AndrewCheung360/Buy4Good/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/AndrewCheung360/Buy4Good.svg?style=for-the-badge
+[forks-url]: https://github.com/AndrewCheung360/Buy4Good/network/members
+[stars-shield]: https://img.shields.io/github/stars/AndrewCheung360/Buy4Good.svg?style=for-the-badge
+[stars-url]: https://github.com/AndrewCheung360/Buy4Good/stargazers
+[issues-shield]: https://img.shields.io/github/issues/AndrewCheung360/Buy4Good.svg?style=for-the-badge
+[issues-url]: https://github.com/AndrewCheung360/Buy4Good/issues
+[license-shield]: https://img.shields.io/github/license/AndrewCheung360/Buy4Good.svg?style=for-the-badge
+[license-url]: https://github.com/AndrewCheung360/Buy4Good/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/andrewcheung
 [product-screenshot]: frontend/Buy4Good/assets/images/screenshot.png
