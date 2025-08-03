@@ -361,11 +361,22 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
-## Contact
+## Team
 
-Andrew Cheung - [@andrewcheung](https://linkedin.com/in/andrewcheung) - andrewcheung360@gmail.com
+### Developers
 
-Project Link: [https://github.com/AndrewCheung360/Buy4Good](https://github.com/AndrewCheung360/Buy4Good)
+[Andrew Cheung](https://www.linkedin.com/in/andrewcheung360/) - andrewcheung360@gmail.com
+
+[Jason Mun](https://www.linkedin.com/in/jason-mun-25181b1b9/) - jason.mun484@gmail.com
+
+[Dora Weng](https://www.linkedin.com/in/chuyinweng/) - cyweng03@gmail.com 
+
+### Designers
+
+[Vicky Wang](https://www.linkedin.com/in/vickywang214/) - vw92@cornell.edu
+
+[Joanna Chen](https://www.linkedin.com/in/joannachen1014/) - jc2887@cornell.edu
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
