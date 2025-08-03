@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useAuth } from "@/context/auth";
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "./components/LoginForm";
 import { Redirect } from "expo-router";
 import React from "react";
 
