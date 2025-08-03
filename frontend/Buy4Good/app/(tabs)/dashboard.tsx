@@ -1,51 +1,38 @@
-import AppHeader from '@/app/components/AppHeader';
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
+import DashboardHeader from "@/app/components/DashboardHeader";
+import SummaryStats from "@/app/components/SummaryStats";
+import RecentActivity from "@/app/components/RecentActivity";
+import CauseBreakdown from "@/app/components/CauseBreakdown";
+import PartnerBrands from "@/app/components/PartnerBrands";
 
 export default function DashboardScreen() {
-  const handleProfilePress = () => {
-    // Handle profile press - could navigate to profile screen
-    console.log('Profile pressed from Dashboard');
-  };
-
-  const handleNotificationPress = () => {
-    // Handle notification press - could navigate to notifications screen
-    console.log('Notifications pressed from Dashboard');
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <AppHeader
-        onProfilePress={handleProfilePress}
-        onNotificationPress={handleNotificationPress}
-      />
-      <View style={styles.content}>
-        <Text style={styles.title}>Dashboard</Text>
-        <Text style={styles.subtitle}>Coming Soon</Text>
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        <DashboardHeader />
+        <SummaryStats />
+        <RecentActivity />
+        <CauseBreakdown />
+        <PartnerBrands />
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#F5F5F5",
   },
-  content: {
+  scrollView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 16,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666666',
+  scrollContent: {
+    paddingTop: 60,
   },
 });

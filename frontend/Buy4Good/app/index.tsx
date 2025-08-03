@@ -1,8 +1,9 @@
 import { useAuth } from "@/context/auth";
+import LoginForm from "./components/LoginForm";
+import PlaidSetup from "./components/PlaidSetup";
 import { Redirect } from "expo-router";
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import LoginForm from "./components/LoginForm";
 
 export default function Index() {
   const { user, isLoading } = useAuth();
@@ -19,9 +20,8 @@ export default function Index() {
     return <LoginForm />;
   }
 
-  // Redirect to tabs if user is authenticated
-  return <Redirect href={"/(tabs)/dashboard" as any} />;
-
+  // Show Plaid setup if user is authenticated
+  return <PlaidSetup />;
 }
 
 const styles = StyleSheet.create({

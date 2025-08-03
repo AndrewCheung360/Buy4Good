@@ -28,8 +28,12 @@ export const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 export const APP_SCHEME = process.env.EXPO_PUBLIC_SCHEME;
 export const JWT_SECRET = process.env.JWT_SECRET!;
 
+// Plaid Constants
+export const PLAID_CLIENT_ID = process.env.EXPO_PUBLIC_PLAID_CLIENT_ID;
+export const PLAID_SECRET = process.env.EXPO_PUBLIC_PLAID_SECRET;
 // API Token
-export const EXPO_PUBLIC_PLEDGE_API_TOKEN = process.env.EXPO_PUBLIC_PLEDGE_API_TOKEN!;
+export const EXPO_PUBLIC_PLEDGE_API_TOKEN =
+  process.env.EXPO_PUBLIC_PLEDGE_API_TOKEN!;
 
 // Cookie Settings
 export const COOKIE_OPTIONS = {
