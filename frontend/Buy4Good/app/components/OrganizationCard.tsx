@@ -1,9 +1,9 @@
-import { supabase } from '@/utils/supabase';
 import { Ionicons } from '@expo/vector-icons'; // Make sure you have this import
 import { User } from "@supabase/supabase-js";
-import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
+
 
 export type Organization = {
   id: string;
@@ -14,98 +14,21 @@ export type Organization = {
 
 };
 
-export default function OrganizationCard({ org }: { org: Organization }) {
+export default function OrganizationCard({
+  org,
+  user,
+  isLiked,
+  onTogglePreference,
+}: {
+  org: Organization;
+  user: User | null;
+  isLiked: boolean;
+  onTogglePreference: () => void;
+}) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [isLiked, setIsLiked] = useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      if (error) {
-        console.error('Failed to fetch user:', error.message);
-      } else {
-        setUser(user);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  // Function to fetch preference state
-  const fetchPreference = async (userId: string, charityId: string) => {
-    const { data: preference, error } = await supabase
-      .from('user_charity_preferences')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('charity_id', charityId)
-      .single();
-
-    if (error && error.code !== 'PGRST116') {
-      console.error('Failed to fetch preference:', error.message);
-      setIsLiked(false);
-    } else if (preference) {
-      setIsLiked(true);
-    } else {
-      setIsLiked(false);
-    }
-  };
-
-  useEffect(() => {
-    if (user && modalVisible) {
-      fetchPreference(user.id, org.id);
-    } else {
-      setIsLiked(false);
-    }
-  }, [user, org.id, modalVisible]);
-
-
-  const handleAddPreference = async () => {
-    if (!user) return;
-
-    if (isLiked) {
-      // Remove preference
-      const { error } = await supabase
-        .from('user_charity_preferences')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('charity_id', org.id);
-
-      if (error) {
-        console.error('Failed to remove preference:', error.message);
-      } else {
-        await fetchPreference(user.id, org.id); // Refresh like state after deletion
-      }
-    } else {
-      // Add preference
-      const { error } = await supabase
-        .from('user_charity_preferences')
-        .insert([
-          {
-            user_id: user.id,
-            charity_id: org.id,
-            allocation_percentage: 0,
-          },
-        ]);
-
-      // also update list of charities liked by user in user table
-
-      if (error) {
-        console.error('Insert error:', error.message);
-      } else {
-        await fetchPreference(user.id, org.id); // Refresh like state after insertion
-      }
-    }
-  };
-
-
-  // Optionally reset isLiked when modal closes, so when reopened it refetches fresh data
   const handleModalClose = () => {
     setModalVisible(false);
-    setIsLiked(false); // Reset state to trigger fresh fetch on modal open if you want
   };
 
   return (
@@ -140,27 +63,35 @@ export default function OrganizationCard({ org }: { org: Organization }) {
             </TouchableOpacity>
           </View>
 
-          <ScrollView contentContainerStyle={{ alignItems: 'center', paddingTop: 0 }}>
+          <ScrollView contentContainerStyle={{ paddingTop: 0 }}>
             <Image
               source={{ uri: org.logo }}
-              style={{ width: '100%', aspectRatio: 2 / 1, borderRadius: 12, backgroundColor: '#f0f0f0' }}
+              style={{
+                width: '100%',
+                aspectRatio: 2 / 1,
+                borderRadius: 12,
+                backgroundColor: '#f0f0f0',
+              }}
               resizeMode="cover"
             />
-            <View className="flex-row justify-between items-center mt-6 mb-4 w-full">
-              <Text className="text-2xl font-bold text-left">
-                {org.name}
-              </Text>
-              <TouchableOpacity onPress={handleAddPreference} className="p-2 rounded-full bg-white">
-                <Ionicons
-                  name={isLiked ? "heart" : "heart-outline"}
-                  size={20}
-                  color={isLiked ? "#e0245e" : "#1F4A2C"}
-                />
+
+            <View className="flex-row justify-between items-center mt-6 w-full">
+              <Text className="text-2xl font-bold text-left">{org.name}</Text>
+              <TouchableOpacity
+                onPress={onTogglePreference}
+                className={`p-2 rounded-full ${isLiked ? 'bg-green-100' : 'bg-gray-300'}`}
+              >
+                <Ionicons name="add" size={30} color={isLiked ? '#1F4A2C' : '#FFFFFF'} />
               </TouchableOpacity>
             </View>
 
+            <TouchableOpacity onPress={() => Linking.openURL(org.website)}>
+              <Text className="text-base text-gray-700 mt-2" style={{ textAlign: 'left' }}>
+                {org.website}
+              </Text>
+            </TouchableOpacity>
 
-            <Text className="text-base text-gray-700 text-left" style={{ alignSelf: 'stretch' }}>
+            <Text className="text-base text-gray-700 mt-4" style={{ textAlign: 'left' }}>
               {org.mission.trim() || 'No mission statement available.'}
             </Text>
           </ScrollView>

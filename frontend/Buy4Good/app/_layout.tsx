@@ -1,10 +1,10 @@
+import { AuthProvider } from "@/context/auth";
 import { useFonts } from "expo-font";
 import { Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
-import { AuthProvider } from "@/context/auth";
 import Navbar from "./components/Navbar";
 import "./globals.css";
 

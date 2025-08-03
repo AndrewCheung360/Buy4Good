@@ -1,8 +1,9 @@
-import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useAuth } from "@/context/auth";
 import LoginForm from "./components/LoginForm";
 import PlaidSetup from "./components/PlaidSetup";
+import { Redirect } from "expo-router";
 import React from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 export default function Index() {
   const { user, isLoading } = useAuth();
