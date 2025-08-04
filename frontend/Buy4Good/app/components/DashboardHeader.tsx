@@ -2,10 +2,12 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GridPattern from "./GridPattern";
 
 export default function DashboardHeader() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const handleShopPress = () => {
     router.push("/(tabs)/explore");
@@ -17,7 +19,7 @@ export default function DashboardHeader() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top + 80 }]}>
       <GridPattern />
       <View style={styles.donationSection}>
         <Text style={styles.donationLabel}>You've donated</Text>
@@ -45,7 +47,6 @@ export default function DashboardHeader() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#1F4A2C",
-    paddingTop: 80,
     paddingHorizontal: 20,
     paddingBottom: 70,
     position: "relative",

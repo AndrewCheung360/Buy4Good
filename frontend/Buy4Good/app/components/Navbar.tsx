@@ -6,6 +6,7 @@ import {
   StatusBar,
   SafeAreaView,
   Image,
+  StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/context/auth";
@@ -97,3 +98,60 @@ export default function Navbar({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+  },
+  safeArea: {
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+  content: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  profileButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
+  },
+  defaultAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#1A3B48",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+  },
+  logoContainer: {
+    alignItems: "center",
+  },
+  logoText: {
+    fontSize: 18,
+    fontWeight: "800",
+    letterSpacing: 1,
+    lineHeight: 18,
+  },
+  notificationButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
