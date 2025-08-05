@@ -14,6 +14,7 @@ import { useAuth } from "@/context/auth";
 interface NavbarProps {
   onProfilePress?: () => void;
   onNotificationPress?: () => void;
+  onLogoPress?: () => void;
   backgroundColor?: string;
   textColor?: string;
   iconColor?: string;
@@ -22,6 +23,7 @@ interface NavbarProps {
 export default function Navbar({
   onProfilePress,
   onNotificationPress,
+  onLogoPress,
   backgroundColor = "white",
   textColor = "#000000",
   iconColor = "#000000",
@@ -67,7 +69,7 @@ export default function Navbar({
               )}
             </TouchableOpacity>
 
-            <View className="items-center">
+            <TouchableOpacity className="items-center" onPress={onLogoPress}>
               <Text
                 className="text-lg font-extrabold tracking-wider leading-[18px]"
                 style={{ color: textColor }}
@@ -80,7 +82,7 @@ export default function Navbar({
               >
                 GOOD
               </Text>
-            </View>
+            </TouchableOpacity>
 
             <TouchableOpacity
               className="w-10 h-10 justify-center items-center"

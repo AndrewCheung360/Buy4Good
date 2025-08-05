@@ -7,11 +7,13 @@ For complete project documentation, setup instructions, and API information, ple
 ## Quick Start
 
 1. Install dependencies
+
    ```bash
    npm install
    ```
 
 2. Configure environment variables
+
    ```bash
    # Create .env file with required API keys
    cp .env.example .env

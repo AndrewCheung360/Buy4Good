@@ -1,21 +1,133 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GridPattern from "./GridPattern";
+import { useAuth } from "@/context/auth";
 
 export default function DashboardHeader() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { user, supabaseUser } = useAuth();
+  const [donationAmount, setDonationAmount] = useState("$0.00");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const address = Platform.OS === "ios" ? "localhost" : "10.0.2.2";
+
+  const fetchDonationAmount = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Try to use supabaseUser.id if available, otherwise fall back to user.id
+      const userId = supabaseUser?.id || user?.id;
+
+      if (!userId) {
+        setError("No user available");
+        setDonationAmount("$0.00");
+        return;
+      }
+
+      const response = await fetch(
+        `http://${address}:8000/api/v1/total_donation/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        setDonationAmount(data.formatted_amount);
+      } else {
+        setDonationAmount("$0.00");
+      }
+    } catch (error: any) {
+      setError("Failed to load donation amount");
+      setDonationAmount("$0.00");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const userId = supabaseUser?.id || user?.id;
+    if (userId) {
+      fetchDonationAmount();
+    }
+  }, [user, supabaseUser]);
 
   const handleShopPress = () => {
     router.push("/(tabs)/explore");
   };
 
-  const handleDonatePress = () => {
-    // TODO: Implement donate functionality
-    console.log("Donate pressed");
+  const handleAutoDonatePress = async () => {
+    try {
+      const userId = supabaseUser?.id || user?.id;
+      if (!userId) {
+        return;
+      }
+
+      // Get user's settings first
+      const settingsResponse = await fetch(
+        `http://${address}:8000/api/v1/get_user_settings/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      let donationPercentage = 0.01; // Default 1%
+      if (settingsResponse.ok) {
+        const settingsData = await settingsResponse.json();
+        if (settingsData.success) {
+          donationPercentage = settingsData.settings.auto_donation_percentage;
+        }
+      }
+
+      // Create auto-donation with user's actual settings
+      const response = await fetch(
+        `http://${address}:8000/api/v1/transactions/auto_donate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            transaction_amount: 100.0, // Example transaction amount
+            original_transaction_id: "example_transaction_123",
+            donation_percentage: donationPercentage, // Use user's actual setting
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+
+        // Refresh the donation amount display
+        fetchDonationAmount();
+      }
+    } catch (error) {
+      // Handle error silently
+    }
   };
 
   return (
@@ -23,7 +135,10 @@ export default function DashboardHeader() {
       <GridPattern />
       <View style={styles.donationSection}>
         <Text style={styles.donationLabel}>You've donated</Text>
-        <Text style={styles.donationAmount}>$247.50</Text>
+        <Text style={styles.donationAmount}>
+          {isLoading ? "Loading..." : donationAmount}
+        </Text>
+        {error && <Text style={styles.errorText}>{error}</Text>}
 
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.shopButton} onPress={handleShopPress}>
@@ -33,10 +148,10 @@ export default function DashboardHeader() {
 
           <TouchableOpacity
             style={styles.donateButton}
-            onPress={handleDonatePress}
+            onPress={handleAutoDonatePress}
           >
             <Ionicons name="heart-outline" size={20} color="#C8D71F" />
-            <Text style={styles.buttonText}>Donate</Text>
+            <Text style={styles.buttonText}>Auto-Donate</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -93,5 +208,11 @@ const styles = StyleSheet.create({
     color: "#C8D71F",
     fontSize: 16,
     fontWeight: "600",
+  },
+  errorText: {
+    color: "#FF6B6B",
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 8,
   },
 });

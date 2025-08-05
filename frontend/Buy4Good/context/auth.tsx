@@ -39,6 +39,7 @@ const AuthContext = React.createContext({
   error: null as AuthError | null,
   supabaseUser: null as User | null,
   supabaseSession: null as Session | null,
+  checkPlaidConnection: () => Promise.resolve(false),
 });
 
 const config: AuthRequestConfig = {
@@ -58,7 +59,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [error, setError] = React.useState<AuthError | null>(null);
   const [accessToken, setAccessToken] = React.useState<string | null>(null);
   const [supabaseUser, setSupabaseUser] = React.useState<User | null>(null);
-  const [supabaseSession, setSupabaseSession] = React.useState<Session | null>(null);
+  const [supabaseSession, setSupabaseSession] = React.useState<Session | null>(
+    null
+  );
 
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
   const isWeb = Platform.OS === "web";
@@ -66,32 +69,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Function to sign in to Supabase with ID token
   const signInToSupabase = async (idToken: string) => {
     try {
-      console.log('Signing in to Supabase with Google ID token');
       const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
+        provider: "google",
         token: idToken,
       });
 
       if (error) {
-        console.error('Supabase sign in error:', error);
         return;
       }
-
-      console.log('Successfully signed in to Supabase:', data);
     } catch (error) {
-      console.error('Error signing in to Supabase:', error);
+      // Handle error silently
     }
   };
 
   // Listen to Supabase auth changes
   React.useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Supabase auth event:', event);
-        setSupabaseSession(session);
-        setSupabaseUser(session?.user ?? null);
-      }
-    );
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSupabaseSession(session);
+      setSupabaseUser(session?.user ?? null);
+    });
 
     return () => subscription.unsubscribe();
   }, []);
@@ -124,7 +122,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               const exp = decoded.exp as number;
               const now = Math.floor(Date.now() / 1000);
               if (exp && exp < now) {
-                console.warn("Access token has expired.");
                 setAccessToken(storedAccessToken);
                 setUser(decoded as AuthUser);
               } else {
@@ -132,14 +129,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 tokenCache?.deleteToken(TOKEN_KEY_NAME);
               }
             } catch (err) {
-              console.error("Error decoding access token:", err);
+              // Handle error silently
             }
           } else {
-            console.warn("No access token found in cache.");
+            // Handle error silently
           }
         }
       } catch (err) {
-        console.error("Error restoring session:", err);
+        // Handle error silently
       } finally {
         setIsLoading(false);
       }
@@ -161,7 +158,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (request?.codeVerifier) {
         formData.append("code_verifier", request.codeVerifier);
       } else {
-        console.warn("Code verifier is not available");
+        // Handle error silently
       }
 
       const tokenResponse = await fetch(`${BASE_URL}/api/auth/token`, {
@@ -195,7 +192,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const idToken = token.idToken; // Get ID token from backend
 
         if (!accessToken) {
-          console.error("No access token received.");
+          // Handle error silently
           return;
         }
         setAccessToken(accessToken);
@@ -207,8 +204,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         tokenCache?.saveToken(TOKEN_KEY_NAME, accessToken);
 
-        console.log("Access token saved to cache:", accessToken);
-
         const decoded = jose.decodeJwt(accessToken);
         setUser(decoded as AuthUser);
       }
@@ -216,12 +211,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         setIsLoading(true);
       } catch (err) {
-        console.error("Error during authentication:", err);
+        // Handle error silently
       } finally {
         setIsLoading(false);
       }
-
-      console.log("Auth code received:", code);
     } else if (response?.type === "error") {
       setError(response.error as AuthError);
     }
@@ -230,13 +223,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signIn = async () => {
     try {
       if (!request) {
-        console.error("Auth request is not initialized.");
+        // Handle error silently
         return;
       }
 
       await promptAsync();
     } catch (err) {
-      console.error("SignIn error:", err);
+      // Handle error silently
     }
   };
   const signOut = async () => {
@@ -248,7 +241,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           credentials: "include",
         });
       } catch (error) {
-        console.error("Error during web logout:", error);
+        // Handle error silently
       }
     } else {
       // For native: Clear both tokens from cache
@@ -259,9 +252,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Sign out from Supabase
     try {
       await supabase.auth.signOut();
-      console.log("Signed out from Supabase");
     } catch (error) {
-      console.error("Error signing out from Supabase:", error);
+      // Handle error silently
     }
 
     // Clear state
@@ -290,6 +282,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return response;
     }
   };
+
+  const checkPlaidConnection = async (): Promise<boolean> => {
+    try {
+      const userId = supabaseUser?.id;
+      if (!userId) {
+        return false;
+      }
+
+      const address = Platform.OS === "ios" ? "localhost" : "10.0.2.2";
+      const response = await fetch(
+        `http://${address}:8000/api/v1/check_connection/${userId}`,
+        { method: "GET" }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.connected;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -301,6 +318,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         error,
         supabaseUser,
         supabaseSession,
+        checkPlaidConnection,
       }}
     >
       {children}

@@ -1,6 +1,7 @@
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -62,46 +63,51 @@
 </details>
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 <img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/c53461f9-439c-4481-bfd6-66231a7ecfa0" />
 
-
 Buy4Good is a comprehensive mobile application that seamlessly integrates charitable giving into everyday shopping. Users can connect their bank accounts, shop at partner merchants, and automatically donate a percentage of their purchases to their chosen charities. The app features real-time transaction tracking, donation analytics, and a curated selection of verified nonprofit organizations.
 
 ### Key Benefits:
-* **Effortless Giving**: Turn purchases into donations automatically
-* **Transparency**: Track exactly where your money goes with detailed analytics
-* **Partner Network**: Shop at major brands and retailers through affiliate partnerships
-* **Impact Visualization**: See your collective impact with interactive dashboards
-* **Secure**: Bank-grade security with Plaid integration for transaction monitoring
+
+- **Effortless Giving**: Turn purchases into donations automatically
+- **Transparency**: Track exactly where your money goes with detailed analytics
+- **Partner Network**: Shop at major brands and retailers through affiliate partnerships
+- **Impact Visualization**: See your collective impact with interactive dashboards
+- **Secure**: Bank-grade security with Plaid integration for transaction monitoring
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
 **Frontend (Mobile App):**
-* [![React Native][ReactNative]][ReactNative-url]
-* [![Expo][Expo]][Expo-url]
-* [![TypeScript][TypeScript]][TypeScript-url]
-* [![Tailwind CSS][TailwindCSS]][TailwindCSS-url]
-* [![Supabase][Supabase]][Supabase-url]
+
+- [![React Native][ReactNative]][ReactNative-url]
+- [![Expo][Expo]][Expo-url]
+- [![TypeScript][TypeScript]][TypeScript-url]
+- [![Tailwind CSS][TailwindCSS]][TailwindCSS-url]
+- [![Supabase][Supabase]][Supabase-url]
 
 **Backend (API Server):**
-* [![Python][Python]][Python-url]
-* [![FastAPI][FastAPI]][FastAPI-url]
-* [![Pydantic][Pydantic]][Pydantic-url]
+
+- [![Python][Python]][Python-url]
+- [![FastAPI][FastAPI]][FastAPI-url]
+- [![Pydantic][Pydantic]][Pydantic-url]
 
 **External Integrations:**
-* [![Plaid][Plaid]][Plaid-url] - Bank account connection and transaction monitoring
-* **Pledge.to API** - Nonprofit organization data and donation processing
-* **Google OAuth** - User authentication
+
+- [![Plaid][Plaid]][Plaid-url] - Bank account connection and transaction monitoring
+- **Pledge.to API** - Nonprofit organization data and donation processing
+- **Google OAuth** - User authentication
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Features
 
 **Mobile App Features:**
+
 - 🔐 **Secure Authentication** - Google OAuth integration
 - 🏦 **Bank Integration** - Connect spending cards via Plaid
 - 🛒 **Merchant Shopping** - Browse and shop at partner brands
@@ -112,6 +118,7 @@ Buy4Good is a comprehensive mobile application that seamlessly integrates charit
 - 📈 **Analytics** - Visualize donation breakdown by cause
 
 **Backend API Features:**
+
 - 🌐 **RESTful API** - Comprehensive endpoints for all app functionality
 - 💸 **Donation Processing** - Handle charitable donations via Pledge.to
 - 🏢 **Organization Management** - Fetch and manage nonprofit data
@@ -123,6 +130,7 @@ Buy4Good is a comprehensive mobile application that seamlessly integrates charit
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 This project consists of two main components: a React Native mobile app (frontend) and a FastAPI server (backend). Follow the instructions below to set up both components locally.
@@ -130,24 +138,28 @@ This project consists of two main components: a React Native mobile app (fronten
 ### Prerequisites
 
 **For Frontend:**
-* Node.js (v18 or higher)
-* npm or yarn
-* Expo CLI
-* iOS Simulator (Mac) or Android Studio
+
+- Node.js (v18 or higher)
+- npm or yarn
+- Expo CLI
+- iOS Simulator (Mac) or Android Studio
 
 **For Backend:**
-* Python 3.8+
-* pip (Python package manager)
+
+- Python 3.8+
+- pip (Python package manager)
 
 **API Keys Required:**
-* Plaid API keys (sandbox and production)
-* Pledge.to API key
-* Supabase project credentials
-* Google OAuth credentials
+
+- Plaid API keys (sandbox and production)
+- Pledge.to API key
+- Supabase project credentials
+- Google OAuth credentials
 
 ### Installation
 
 #### 1. Clone the Repository
+
 ```sh
 git clone https://github.com/AndrewCheung360/Buy4Good.git
 cd Buy4Good
@@ -205,6 +217,7 @@ npx expo start
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
 ### Mobile App Usage
@@ -222,16 +235,16 @@ The backend provides a comprehensive REST API for all app functionality:
 
 ```javascript
 // Example: Create a donation
-const response = await fetch('http://localhost:8000/api/v1/donations', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const response = await fetch("http://localhost:8000/api/v1/donations", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     email: "donor@example.com",
     first_name: "John",
     last_name: "Doe",
     amount: "25.00",
-    organization_id: "3685b542-61d5-45da-9580-162dca725966"
-  })
+    organization_id: "3685b542-61d5-45da-9580-162dca725966",
+  }),
 });
 ```
 
@@ -280,33 +293,37 @@ The backend provides comprehensive API documentation through FastAPI's automatic
 
 ### Key Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/v1/donations` | POST | Create a new donation |
-| `/api/v1/organizations` | GET | List nonprofit organizations |
-| `/api/v1/organizations/{id}` | GET | Get organization details |
-| `/api/v1/simulate-transaction` | POST | Simulate affiliate transaction |
-| `/api/v1/webhook` | POST | Handle affiliate webhooks |
-| `/health` | GET | Comprehensive health check |
+| Endpoint                       | Method | Description                    |
+| ------------------------------ | ------ | ------------------------------ |
+| `/api/v1/donations`            | POST   | Create a new donation          |
+| `/api/v1/organizations`        | GET    | List nonprofit organizations   |
+| `/api/v1/organizations/{id}`   | GET    | Get organization details       |
+| `/api/v1/simulate-transaction` | POST   | Simulate affiliate transaction |
+| `/api/v1/webhook`              | POST   | Handle affiliate webhooks      |
+| `/health`                      | GET    | Comprehensive health check     |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
+
 ## Roadmap
 
 - [x] **Phase 1: Core Foundation**
+
   - [x] User authentication with Google OAuth
   - [x] Bank account integration via Plaid
   - [x] Basic charity browsing and selection
   - [x] Donation tracking dashboard
 
 - [ ] **Phase 2: Enhanced Shopping Experience**
+
   - [ ] Real-time affiliate transaction processing
   - [ ] Push notifications for donations
   - [ ] Advanced analytics and reporting
   - [ ] Social sharing features
 
 - [ ] **Phase 3: Scale & Optimization**
+
   - [ ] Additional payment method support
   - [ ] Corporate partnership program
   - [ ] Advanced charity recommendation engine
@@ -323,6 +340,7 @@ See the [open issues](https://github.com/AndrewCheung360/Buy4Good/issues) for a 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -354,6 +372,7 @@ Don't forget to give the project a star! Thanks again!
 </a>
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
@@ -361,6 +380,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
+
 ## Team
 
 ### Developers
@@ -369,7 +389,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 [Jason Mun](https://www.linkedin.com/in/jason-mun-25181b1b9/) - jason.mun484@gmail.com
 
-[Dora Weng](https://www.linkedin.com/in/chuyinweng/) - cyweng03@gmail.com 
+[Dora Weng](https://www.linkedin.com/in/chuyinweng/) - cyweng03@gmail.com
 
 ### Designers
 
@@ -377,22 +397,23 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 [Joanna Chen](https://www.linkedin.com/in/joannachen1014/) - jc2887@cornell.edu
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
 
-* [Expo](https://expo.dev/) - For the excellent React Native development platform
-* [FastAPI](https://fastapi.tiangolo.com/) - For the high-performance Python web framework
-* [Plaid](https://plaid.com/) - For secure bank account integration
-* [Pledge.to](https://pledge.to/) - For nonprofit organization data and donation processing
-* [Supabase](https://supabase.com/) - For the backend-as-a-service platform
-* [Best-README-Template](https://github.com/othneildrew/Best-README-Template) - For this amazing README template
+- [Expo](https://expo.dev/) - For the excellent React Native development platform
+- [FastAPI](https://fastapi.tiangolo.com/) - For the high-performance Python web framework
+- [Plaid](https://plaid.com/) - For secure bank account integration
+- [Pledge.to](https://pledge.to/) - For nonprofit organization data and donation processing
+- [Supabase](https://supabase.com/) - For the backend-as-a-service platform
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) - For this amazing README template
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/AndrewCheung360/Buy4Good.svg?style=for-the-badge
 [contributors-url]: https://github.com/AndrewCheung360/Buy4Good/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/AndrewCheung360/Buy4Good.svg?style=for-the-badge
@@ -406,7 +427,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/andrewcheung
 [product-screenshot]: frontend/Buy4Good/assets/images/screenshot.png
-
 [ReactNative]: https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [ReactNative-url]: https://reactnative.dev/
 [Expo]: https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white
