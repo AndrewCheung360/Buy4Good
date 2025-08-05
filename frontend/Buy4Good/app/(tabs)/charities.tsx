@@ -2,6 +2,7 @@ import { EXPO_PUBLIC_PLEDGE_API_TOKEN } from "@/constants";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   SafeAreaView,
   ScrollView,
@@ -10,6 +11,7 @@ import {
   View,
 } from "react-native";
 import OrganizationCard from "../components/OrganizationCard";
+import { useDataRefresh } from "@/context/dataRefresh";
 
 const API_BASE = "https://api.pledge.to/v1";
 
@@ -29,6 +31,7 @@ export default function CharityScreen() {
   const [user, setUser] = useState<User | null>(null);
 
   const [preferences, setPreferences] = useState<Record<string, boolean>>({});
+  const { markDataChanged } = useDataRefresh();
 
   const fetchPreferences = async (userId: string, charityIds: string[]) => {
     if (!userId || charityIds.length === 0) {
@@ -172,7 +175,44 @@ export default function CharityScreen() {
         console.error("Failed to remove preference:", error.message);
         return;
       }
+
+      // Remove from users table charities array
+      const { data: currentUser } = await supabase
+        .from("users")
+        .select("charities")
+        .eq("id", user.id)
+        .single();
+
+      if (currentUser && currentUser.charities) {
+        const updatedCharities = currentUser.charities.filter(
+          (id: string) => id !== charityId
+        );
+
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({ charities: updatedCharities })
+          .eq("id", user.id);
+
+        if (updateError) {
+          console.error(
+            "Failed to update user charities:",
+            updateError.message
+          );
+        }
+      }
     } else {
+      // Check if user already has 5 liked charities
+      const likedCharitiesCount =
+        Object.values(preferences).filter(Boolean).length;
+      if (likedCharitiesCount >= 5) {
+        Alert.alert(
+          "Maximum Charities Reached",
+          "You can only like up to 5 charities. Please unlike one before adding another.",
+          [{ text: "OK" }]
+        );
+        return;
+      }
+
       // Add preference
       const { error } = await supabase
         .from("user_charity_preferences")
@@ -184,7 +224,31 @@ export default function CharityScreen() {
         console.error("Failed to add preference:", error.message);
         return;
       }
+
+      // Add to users table charities array
+      const { data: currentUser } = await supabase
+        .from("users")
+        .select("charities")
+        .eq("id", user.id)
+        .single();
+
+      let updatedCharities = [charityId];
+      if (currentUser && currentUser.charities) {
+        updatedCharities = [...currentUser.charities, charityId];
+      }
+
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ charities: updatedCharities })
+        .eq("id", user.id);
+
+      if (updateError) {
+        console.error("Failed to update user charities:", updateError.message);
+      }
     }
+
+    // Mark that data has changed
+    markDataChanged();
 
     // Update local state
     setPreferences((prev) => ({

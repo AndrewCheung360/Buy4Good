@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,13 +7,15 @@ import {
   ActivityIndicator,
   Platform,
   Image,
+  ScrollView,
+  SafeAreaView,
   RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuth } from "@/context/auth";
-import { useDataRefresh } from "@/context/dataRefresh";
+import { useAuth } from "../context/auth";
 import { router } from "expo-router";
-import { mockMerchants } from "../../data/mockData";
+import GridPattern from "./components/GridPattern";
+import { mockMerchants } from "../data/mockData";
 import { useFocusEffect } from "expo-router";
 
 interface DonationItem {
@@ -39,17 +41,14 @@ interface TransactionGroup {
   donations: DonationItem[];
 }
 
-export default function RecentActivity() {
+export default function RecentActivityScreen() {
   const { supabaseUser } = useAuth();
-  const { lastRefreshTime, shouldRefresh } = useDataRefresh();
   const [transactionGroups, setTransactionGroups] = useState<
     TransactionGroup[]
   >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const lastUpdateTime = useRef(Date.now());
 
   const fetchRecentDonations = async (isRefresh = false) => {
     try {
@@ -65,19 +64,21 @@ export default function RecentActivity() {
         return;
       }
 
-      const address = "localhost";
-      const url = `http://${address}:8000/api/v1/recent_donations/${
-        supabaseUser.id
-      }?t=${Date.now()}`;
+      const address = Platform.OS === "ios" ? "localhost" : "10.0.2.2";
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-        },
-      });
+      const response = await fetch(
+        `http://${address}:8000/api/v1/recent_donations/${
+          supabaseUser.id
+        }?t=${Date.now()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -93,7 +94,6 @@ export default function RecentActivity() {
         const donationsWithLogos = await Promise.all(
           data.donations.map(async (donation: DonationItem) => {
             try {
-              const address = Platform.OS === "ios" ? "localhost" : "10.0.2.2";
               const response = await fetch(
                 `http://${address}:8000/api/v1/organizations/${donation.charity_id}`
               );
@@ -194,19 +194,13 @@ export default function RecentActivity() {
   };
 
   useEffect(() => {
-    // Only fetch if data is stale or if it's the first load
-    if (loading || shouldRefresh(lastUpdateTime.current)) {
-      fetchRecentDonations();
-    }
-  }, [supabaseUser?.id, lastRefreshTime]);
+    fetchRecentDonations();
+  }, [supabaseUser?.id]);
 
   // Refresh data when screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
-      // Only refresh if data is stale
-      if (shouldRefresh(lastUpdateTime.current)) {
-        fetchRecentDonations();
-      }
+      fetchRecentDonations();
     }, [supabaseUser?.id])
   );
 
@@ -219,14 +213,36 @@ export default function RecentActivity() {
       return "Just now";
     } else if (diffInHours < 24) {
       const hours = Math.floor(diffInHours);
-      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+      return `${hours}h`;
     } else if (diffInHours < 168) {
       // 7 days
       const days = Math.floor(diffInHours / 24);
-      return `${days} day${days > 1 ? "s" : ""} ago`;
+      return `${days}d`;
     } else {
       const weeks = Math.floor(diffInHours / 168);
-      return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+      return `${weeks}w`;
+    }
+  };
+
+  const getTimeSection = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInDays = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diffInDays === 0) {
+      return "Today";
+    } else if (diffInDays === 1) {
+      return "Yesterday";
+    } else if (diffInDays < 7) {
+      return "This week";
+    } else {
+      return date.toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "2-digit",
+      });
     }
   };
 
@@ -251,190 +267,252 @@ export default function RecentActivity() {
     return iconMap[charityName] || "💝";
   };
 
-  const handleViewAll = () => {
-    router.push("/recent-activity" as any);
-  };
-
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Recent Activity</Text>
-        <TouchableOpacity onPress={handleViewAll}>
-          <Ionicons name="chevron-forward" size={20} color="#666666" />
-        </TouchableOpacity>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <GridPattern />
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => fetchRecentDonations(true)}
+            colors={["#1F4A2C"]}
+            tintColor="#1F4A2C"
+          />
+        }
+      >
+        <View style={styles.content}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
+              <Ionicons name="arrow-back" size={24} color="#1F4A2C" />
+            </TouchableOpacity>
+            <Text style={styles.title}>Recent Activity</Text>
+            <View style={styles.placeholder} />
+          </View>
 
-      {loading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="small" color="#1a1a1a" />
-          <Text style={styles.loadingText}>Loading donations...</Text>
-        </View>
-      )}
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#1F4A2C" />
+              <Text style={styles.loadingText}>Loading donations...</Text>
+            </View>
+          )}
 
-      {error && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      )}
+          {error && (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
 
-      {!loading && !error && transactionGroups.length === 0 && (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No donations yet</Text>
-          <Text style={styles.emptySubtext}>
-            Your donations will appear here
-          </Text>
-        </View>
-      )}
+          {!loading && !error && transactionGroups.length === 0 && (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyTitle}>No donations yet</Text>
+              <Text style={styles.emptyText}>
+                Your donations will appear here once you make your first
+                purchase
+              </Text>
+            </View>
+          )}
 
-      {!loading &&
-        !error &&
-        transactionGroups
-          .slice(0, showAll ? transactionGroups.length : 3)
-          .map((group) => (
-            <View key={group.transaction_id} style={styles.transactionCard}>
-              {/* Transaction Header */}
-              <View style={styles.transactionHeader}>
-                <View style={styles.productInfo}>
-                  <View style={styles.productImage}>
-                    {group.donations[0]?.merchant_logo ? (
-                      <Image
-                        source={{ uri: group.donations[0].merchant_logo }}
-                        style={styles.merchantLogo}
-                        resizeMode="contain"
-                      />
-                    ) : (
-                      <Ionicons name="bag-outline" size={20} color="#666666" />
-                    )}
-                  </View>
-                  <View style={styles.productDetails}>
-                    <Text style={styles.productName}>{group.product_name}</Text>
-                    <Text style={styles.merchantName}>
-                      {group.merchant_name}
-                    </Text>
-                    <Text style={styles.transactionDate}>
-                      {formatDate(group.transaction_date)}
-                    </Text>
+          {!loading &&
+            !error &&
+            transactionGroups.map((group, groupIndex) => {
+              const timeSection = getTimeSection(group.transaction_date);
+              const showSectionHeader =
+                groupIndex === 0 ||
+                getTimeSection(
+                  transactionGroups[groupIndex - 1].transaction_date
+                ) !== timeSection;
+
+              return (
+                <View key={group.transaction_id}>
+                  {showSectionHeader && (
+                    <Text style={styles.sectionHeader}>{timeSection}</Text>
+                  )}
+
+                  <View style={styles.transactionCard}>
+                    {/* Transaction Header */}
+                    <View style={styles.transactionHeader}>
+                      <View style={styles.productInfo}>
+                        <View style={styles.productImage}>
+                          {group.donations[0]?.merchant_logo ? (
+                            <Image
+                              source={{ uri: group.donations[0].merchant_logo }}
+                              style={styles.merchantLogo}
+                              resizeMode="contain"
+                            />
+                          ) : (
+                            <Ionicons
+                              name="bag-outline"
+                              size={24}
+                              color="#666666"
+                            />
+                          )}
+                        </View>
+                        <View style={styles.productDetails}>
+                          <Text style={styles.productName}>
+                            {group.product_name}
+                          </Text>
+                          <Text style={styles.merchantName}>
+                            {group.merchant_name}
+                          </Text>
+                          <Text style={styles.transactionDate}>
+                            {formatDate(group.transaction_date)}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text style={styles.transactionAmount}>
+                        ${group.transaction_amount.toFixed(2)}
+                      </Text>
+                    </View>
+
+                    {/* Donations List */}
+                    <View style={styles.donationsContainer}>
+                      {group.donations.map((donation) => (
+                        <View key={donation.id} style={styles.donationItem}>
+                          <View style={styles.charityIcon}>
+                            {donation.logo_url ? (
+                              <Image
+                                source={{ uri: donation.logo_url }}
+                                style={styles.charityLogo}
+                                resizeMode="contain"
+                              />
+                            ) : (
+                              <Text style={styles.charityIconText}>
+                                {getCharityIcon(donation.charity_name)}
+                              </Text>
+                            )}
+                          </View>
+                          <Text style={styles.charityName}>
+                            {donation.charity_name}
+                          </Text>
+                          <Text style={styles.donationAmount}>
+                            ${donation.donation_amount.toFixed(2)}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
                   </View>
                 </View>
-                <Text style={styles.transactionAmount}>
-                  ${group.transaction_amount.toFixed(2)}
-                </Text>
-              </View>
-
-              {/* Donations List */}
-              <View style={styles.donationsContainer}>
-                {group.donations.slice(0, 2).map((donation) => (
-                  <View key={donation.id} style={styles.donationItem}>
-                    <View style={styles.charityIcon}>
-                      {donation.logo_url ? (
-                        <Image
-                          source={{ uri: donation.logo_url }}
-                          style={styles.charityLogo}
-                          resizeMode="contain"
-                        />
-                      ) : (
-                        <Text style={styles.charityIconText}>
-                          {getCharityIcon(donation.charity_name)}
-                        </Text>
-                      )}
-                    </View>
-                    <Text style={styles.charityName}>
-                      {donation.charity_name}
-                    </Text>
-                    <Text style={styles.donationAmount}>
-                      ${donation.donation_amount.toFixed(2)}
-                    </Text>
-                  </View>
-                ))}
-                {group.donations.length > 2 && (
-                  <Text style={styles.moreDonations}>
-                    +{group.donations.length - 2} more charities
-                  </Text>
-                )}
-              </View>
-            </View>
-          ))}
-
-      {!loading && !error && transactionGroups.length > 3 && !showAll && (
-        <TouchableOpacity
-          style={styles.viewAllButton}
-          onPress={() => setShowAll(true)}
-        >
-          <Text style={styles.viewAllText}>
-            View All ({transactionGroups.length})
-          </Text>
-        </TouchableOpacity>
-      )}
-    </View>
+              );
+            })}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
-    marginTop: 24,
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: 24,
+    paddingTop: 70,
+    paddingBottom: 40,
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    justifyContent: "space-between",
+    marginBottom: 32,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#F8F9FA",
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 28,
+    fontWeight: "800",
     color: "#1a1a1a",
+    letterSpacing: -0.5,
+  },
+  placeholder: {
+    width: 44,
+  },
+  refreshButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#F8F9FA",
+    justifyContent: "center",
+    alignItems: "center",
   },
   loadingContainer: {
     alignItems: "center",
-    paddingVertical: 20,
+    paddingVertical: 40,
   },
   loadingText: {
-    marginTop: 8,
-    fontSize: 14,
+    marginTop: 16,
+    fontSize: 16,
     color: "#666666",
+    textAlign: "center",
   },
   errorContainer: {
     alignItems: "center",
-    paddingVertical: 20,
+    paddingVertical: 40,
   },
   errorText: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#ff0000",
+    textAlign: "center",
   },
   emptyContainer: {
     alignItems: "center",
-    paddingVertical: 20,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#1a1a1a",
+    marginBottom: 12,
+    textAlign: "center",
   },
   emptyText: {
     fontSize: 16,
-    fontWeight: "500",
-    color: "#1a1a1a",
-    marginBottom: 4,
-  },
-  emptySubtext: {
-    fontSize: 14,
     color: "#666666",
+    textAlign: "center",
+    lineHeight: 22,
+  },
+  sectionHeader: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    marginBottom: 12,
+    marginTop: 24,
   },
   transactionCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    marginBottom: 12,
+    borderRadius: 16,
+    marginBottom: 16,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
     shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowRadius: 8,
+    elevation: 3,
     overflow: "hidden",
   },
   transactionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 12,
+    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#F0F0F0",
   },
@@ -444,95 +522,79 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productImage: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: "#F8F9FA",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 10,
+    marginRight: 12,
   },
   merchantLogo: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   productDetails: {
     flex: 1,
   },
   productName: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "600",
     color: "#1a1a1a",
     marginBottom: 2,
   },
   merchantName: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#666666",
     marginBottom: 2,
   },
   transactionDate: {
-    fontSize: 10,
+    fontSize: 12,
     color: "#999999",
   },
   transactionAmount: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
     color: "#1F4A2C",
   },
   donationsContainer: {
-    padding: 12,
+    padding: 16,
   },
   donationItem: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F8F9FA",
-    padding: 8,
-    borderRadius: 8,
-    marginBottom: 6,
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 8,
   },
   charityIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 8,
+    marginRight: 12,
   },
   charityLogo: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
   },
   charityIconText: {
-    fontSize: 12,
+    fontSize: 16,
   },
   charityName: {
     flex: 1,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "500",
     color: "#1a1a1a",
   },
   donationAmount: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#1F4A2C",
-  },
-  moreDonations: {
-    fontSize: 11,
-    color: "#666666",
-    textAlign: "center",
-    marginTop: 4,
-  },
-  viewAllButton: {
-    alignItems: "center",
-    paddingVertical: 12,
-    marginTop: 8,
-  },
-  viewAllText: {
     fontSize: 14,
-    color: "#1F4A2C",
     fontWeight: "600",
+    color: "#1F4A2C",
   },
 });

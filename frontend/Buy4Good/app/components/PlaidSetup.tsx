@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Text, TouchableOpacity, Image, Platform } from "react-native";
 import {
   create,
   open,
@@ -9,58 +9,60 @@ import {
   LinkIOSPresentationStyle,
   LinkLogLevel,
 } from "react-native-plaid-link-sdk";
-import { plaidClient } from "../../utils/plaid";
-import { CountryCode, Products } from "plaid";
 import { router } from "expo-router";
 import { useAuth, AuthUser } from "@/context/auth";
 import GridPattern from "./GridPattern";
 
 export default function PlaidSetup() {
-  const { user } = useAuth();
+  const { user, supabaseUser } = useAuth();
   const [token, setToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const parseStringify = (value: any) => JSON.parse(JSON.stringify(value));
+  const address = Platform.OS === "ios" ? "localhost" : "10.0.2.2";
 
   const createLinkToken = async (user: AuthUser) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const tokenParams = {
-        user: {
-          client_user_id: user.id,
-        },
-        client_name: `${user.given_name || user.name} ${
-          user.family_name || ""
-        }`,
-        products: ["auth"] as Products[],
-        language: "en",
-        country_codes: ["US"] as CountryCode[],
-      };
+      const response = await fetch(
+        `http://${address}:8000/api/v1/create_link_token`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            address: address,
+            user_id: user.id,
+          }),
+        }
+      );
 
-      const response = await plaidClient.linkTokenCreate(tokenParams);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      if (response.data.link_token) {
-        return parseStringify({ linkToken: response.data.link_token });
+      const data = await response.json();
+
+      if (data.link_token) {
+        return { linkToken: data.link_token };
       } else {
         throw new Error("No link token received from Plaid");
       }
     } catch (error: any) {
-      console.error("Error creating link token:", error);
-
       let errorMessage = "Failed to create link token. Please try again.";
 
-      if (error.response?.status === 400) {
+      if (error.message.includes("400")) {
         errorMessage =
           "Invalid request to Plaid. Please check your credentials.";
-      } else if (error.response?.status === 401) {
+      } else if (error.message.includes("401")) {
         errorMessage = "Unauthorized. Please check your Plaid credentials.";
-      } else if (error.response?.status === 403) {
+      } else if (error.message.includes("403")) {
         errorMessage = "Forbidden. Please check your Plaid permissions.";
-      } else if (error.response?.data?.error_message) {
-        errorMessage = `Plaid Error: ${error.response.data.error_message}`;
+      } else if (error.message.includes("500")) {
+        errorMessage = "Server error. Please try again later.";
       }
 
       setError(errorMessage);
@@ -82,7 +84,16 @@ export default function PlaidSetup() {
 
   useEffect(() => {
     const getLinkToken = async () => {
-      if (!user) return;
+      // Try to use supabaseUser.id if available, otherwise fall back to user.id
+      const userId = supabaseUser?.id || user?.id;
+
+      if (!userId) {
+        return;
+      }
+
+      if (!user) {
+        return;
+      }
 
       const data = await createLinkToken(user);
 
@@ -96,16 +107,44 @@ export default function PlaidSetup() {
     };
 
     getLinkToken();
-  }, [user]);
+  }, [user, supabaseUser]);
 
-  const handleSuccess = (success: LinkSuccess) => {
-    console.log("Plaid link success:", success);
+  const handleSuccess = async (success: LinkSuccess) => {
+    // Try to use supabaseUser.id if available, otherwise fall back to user.id
+    const userId = supabaseUser?.id || user?.id;
+
+    if (!userId) {
+      return;
+    }
+
+    try {
+      // Exchange the public token for an access token
+      const response = await fetch(
+        `http://${address}:8000/api/v1/exchange_public_token`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            public_token: success.publicToken,
+            user_id: userId,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        // Handle error silently
+      }
+    } catch (error) {
+      // Handle error silently
+    }
+
     // Navigate to dashboard after successful bank connection
     router.replace("/(tabs)/dashboard");
   };
 
   const handleExit = (linkExit: LinkExit) => {
-    console.log("Plaid link exit:", linkExit);
     dismissLink();
   };
 
@@ -179,7 +218,7 @@ export default function PlaidSetup() {
                 token ? "text-[#1F4A2C]" : "text-gray-500"
               }`}
             >
-              {isLoading ? "Creating Token..." : "Connect to Your Bank"}
+              {isLoading ? "Loading..." : "Connect to Your Bank"}
             </Text>
           </TouchableOpacity>
         </View>

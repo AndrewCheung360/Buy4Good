@@ -15,6 +15,11 @@ class ToggleAutoDonateRequest(BaseModel):
     user_id: str
     auto_donate_enabled: bool
 
+class UpdateAllocationPercentageRequest(BaseModel):
+    user_id: str
+    charity_id: str
+    allocation_percentage: float
+
 @router.post("/update_donation_percentage")
 async def update_donation_percentage(request: UpdateDonationPercentageRequest):
     """Update user's auto-donation percentage"""
@@ -76,6 +81,48 @@ async def get_user_settings(user_id: str):
     except Exception as e:
         logger.error(f"Error getting user settings: {e}")
         raise HTTPException(status_code=500, detail=f"Error getting user settings: {e}")
+
+@router.get("/get_user_charity_preferences/{user_id}")
+async def get_user_charity_preferences(user_id: str):
+    """Get user's charity preferences"""
+    try:
+        preferences = await supabase_service.get_user_charity_preferences(user_id)
+        
+        return {
+            "success": True,
+            "preferences": preferences
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting user charity preferences: {e}")
+        raise HTTPException(status_code=500, detail=f"Error getting user charity preferences: {e}")
+
+@router.post("/update_allocation_percentage")
+async def update_allocation_percentage(request: UpdateAllocationPercentageRequest):
+    """Update allocation percentage for a specific charity"""
+    try:
+        if request.allocation_percentage < 0 or request.allocation_percentage > 100:
+            raise HTTPException(status_code=400, detail="Allocation percentage must be between 0% and 100%")
+
+        success = await supabase_service.update_allocation_percentage(
+            request.user_id,
+            request.charity_id,
+            request.allocation_percentage
+        )
+
+        if success:
+            return {
+                "success": True,
+                "message": "Allocation percentage updated successfully",
+                "charity_id": request.charity_id,
+                "allocation_percentage": request.allocation_percentage
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to update allocation percentage")
+
+    except Exception as e:
+        logger.error(f"Error updating allocation percentage: {e}")
+        raise HTTPException(status_code=500, detail=f"Error updating allocation percentage: {e}")
 
 @router.get("/settings_health")
 async def settings_health_check():

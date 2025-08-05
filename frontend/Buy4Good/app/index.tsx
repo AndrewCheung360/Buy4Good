@@ -1,6 +1,7 @@
 import { useAuth } from "@/context/auth";
 import LoginForm from "./components/LoginForm";
 import PlaidSetup from "./components/PlaidSetup";
+import PostSignInHandler from "./components/PostSignInHandler";
 import { Redirect } from "expo-router";
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
@@ -21,7 +22,12 @@ export default function Index() {
   }
 
   // Show Plaid setup if user is authenticated
-  return <PlaidSetup />;
+  return (
+    <View style={styles.container}>
+      <PostSignInHandler />
+      <PlaidSetup />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -30,5 +36,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
+  },
+  container: {
+    flex: 1,
   },
 });

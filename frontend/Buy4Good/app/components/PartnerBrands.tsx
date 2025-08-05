@@ -1,43 +1,48 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { mockMerchants } from "@/data/mockData";
 
-// Select specific brands for the dashboard
-const selectedBrands = ["zara", "adidas", "target", "allbirds"];
-
 export default function PartnerBrands() {
-  const partnerBrands = selectedBrands
-    .map(
-      (id) =>
-        mockMerchants.clothing.find((m) => m.id === id) ||
-        mockMerchants.kids.find((m) => m.id === id)
-    )
-    .filter(Boolean);
+  // Get all brands from mockData
+  const allBrands = Object.values(mockMerchants).flat();
+
+  const handleExplorePress = () => {
+    router.push("/(tabs)/explore");
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Partner Brands Used</Text>
-        <TouchableOpacity>
+        <Text style={styles.title}>Partner Brands</Text>
+        <TouchableOpacity onPress={handleExplorePress}>
           <Ionicons name="chevron-forward" size={20} color="#666666" />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.brandsContainer}>
-        {partnerBrands.map((brand, index) => (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.brandsContainer}
+      >
+        {allBrands.map((brand, index) => (
           <View key={brand?.id} style={styles.brandCard}>
-            <View style={styles.brandLogoContainer}>
-              <Image
-                source={{ uri: brand?.logo }}
-                style={styles.brandLogo}
-                resizeMode="contain"
-              />
-            </View>
-            <Text style={styles.brandAmount}>$0.00</Text>
+            <Image
+              source={{ uri: brand?.logo }}
+              style={styles.brandLogo}
+              resizeMode="contain"
+            />
           </View>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -60,16 +65,17 @@ const styles = StyleSheet.create({
     color: "#1a1a1a",
   },
   brandsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    paddingHorizontal: 4,
   },
   brandCard: {
     backgroundColor: "#FFFFFF",
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
     alignItems: "center",
-    flex: 1,
-    marginHorizontal: 4,
+    justifyContent: "center",
+    marginHorizontal: 8,
+    width: 80,
+    height: 60,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -79,20 +85,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
-  brandLogoContainer: {
-    width: 60,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 8,
-  },
   brandLogo: {
     width: "100%",
     height: "100%",
-  },
-  brandAmount: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1a1a1a",
   },
 });

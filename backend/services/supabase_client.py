@@ -185,7 +185,7 @@ class SupabaseService:
             result = self.client.table('user_donations')\
                 .select('*')\
                 .eq('user_id', user_id)\
-                .order('donation_date', desc=True)\
+                .order('created_at', desc=True)\
                 .limit(limit)\
                 .execute()
             
@@ -229,11 +229,36 @@ class SupabaseService:
                 logger.warning("Supabase not configured, skipping percentage update")
                 return False
             
-            result = self.client.table('user_settings').upsert({
-                'user_id': user_id,
-                'auto_donation_percentage': percentage,
-                'updated_at': 'now()'
-            }).execute()
+            logger.info(f"Attempting to update donation percentage for user: {user_id} to {percentage}")
+            
+            # Check if user settings exist
+            try:
+                result = self.client.table('user_settings').select('*').eq('user_id', user_id).single().execute()
+                if result.data:
+                    # Update existing record
+                    logger.info(f"Updating existing settings for user: {user_id}")
+                    result = self.client.table('user_settings').update({
+                        'auto_donation_percentage': percentage,
+                        'updated_at': 'now()'
+                    }).eq('user_id', user_id).execute()
+                else:
+                    # Insert new record
+                    logger.info(f"Creating new settings for user: {user_id}")
+                    result = self.client.table('user_settings').insert({
+                        'user_id': user_id,
+                        'auto_donation_percentage': percentage,
+                        'auto_donate_enabled': True,
+                        'updated_at': 'now()'
+                    }).execute()
+            except Exception as e:
+                # If no record exists, create one
+                logger.info(f"Creating new settings for user: {user_id} (no existing record)")
+                result = self.client.table('user_settings').insert({
+                    'user_id': user_id,
+                    'auto_donation_percentage': percentage,
+                    'auto_donate_enabled': True,
+                    'updated_at': 'now()'
+                }).execute()
             
             logger.info(f"Successfully updated donation percentage for user: {user_id}")
             return True
@@ -315,6 +340,66 @@ class SupabaseService:
                 'auto_donation_percentage': 0.01,
                 'auto_donate_enabled': False
             }
+
+    async def get_user_charity_preferences(self, user_id: str) -> list:
+        """Get user's charity preferences with allocation percentages"""
+        try:
+            if not self.client:
+                logger.warning("Supabase not configured, returning empty list")
+                return []
+            
+            result = self.client.table('user_charity_preferences').select('charity_id, allocation_percentage').eq('user_id', user_id).eq('is_active', True).execute()
+            
+            if result.data:
+                logger.info(f"Found {len(result.data)} charity preferences for user: {user_id}")
+                return result.data
+            else:
+                logger.info(f"No charity preferences found for user: {user_id}")
+                return []
+                
+        except Exception as e:
+            logger.error(f"Error getting charity preferences for user {user_id}: {str(e)}")
+            return []
+
+    async def get_charity_name(self, charity_id: str) -> Optional[str]:
+        """Get charity name by ID from Pledge API"""
+        try:
+            from services.pledge_client import pledge_client
+            
+            # Get organization details from Pledge API
+            organization_data = await pledge_client.get_organization_by_id(charity_id)
+            
+            if organization_data and 'name' in organization_data:
+                logger.info(f"Found charity name for ID {charity_id}: {organization_data['name']}")
+                return organization_data['name']
+            else:
+                logger.info(f"No charity found for ID: {charity_id}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"Error getting charity name for ID {charity_id}: {str(e)}")
+            return None
+
+    async def update_allocation_percentage(self, user_id: str, charity_id: str, allocation_percentage: float) -> bool:
+        """Update allocation percentage for a specific charity"""
+        try:
+            if not self.client:
+                logger.warning("Supabase not configured, skipping allocation update")
+                return False
+            
+            logger.info(f"Updating allocation percentage for user: {user_id}, charity: {charity_id} to {allocation_percentage}%")
+            
+            result = self.client.table('user_charity_preferences').update({
+                'allocation_percentage': allocation_percentage,
+                'updated_at': 'now()'
+            }).eq('user_id', user_id).eq('charity_id', charity_id).execute()
+            
+            logger.info(f"Successfully updated allocation percentage for user: {user_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error updating allocation percentage for user {user_id}: {str(e)}")
+            return False
 
 # Global instance
 supabase_service = SupabaseService() 
