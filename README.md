@@ -423,7 +423,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [issues-shield]: https://img.shields.io/github/issues/AndrewCheung360/Buy4Good.svg?style=for-the-badge
 [issues-url]: https://github.com/AndrewCheung360/Buy4Good/issues
 [license-shield]: https://img.shields.io/github/license/AndrewCheung360/Buy4Good.svg?style=for-the-badge
-[license-url]: https://github.com/AndrewCheung360/Buy4Good/blob/master/LICENSE.txt
+[license-url]: https://github.com/AndrewCheung360/Buy4Good/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/andrewcheung
 [product-screenshot]: frontend/Buy4Good/assets/images/screenshot.png
