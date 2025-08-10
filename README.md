@@ -25,7 +25,7 @@
     <a href="https://github.com/AndrewCheung360/Buy4Good"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/AndrewCheung360/Buy4Good">View Demo</a>
+    <a href="https://youtu.be/yNkha8-tiBU">View Demo</a>
     ·
     <a href="https://github.com/AndrewCheung360/Buy4Good/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
